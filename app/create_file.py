@@ -25,7 +25,8 @@ def main() -> None:
         os.makedirs(dir_path, exist_ok=True)
 
     if file_name:
-        file_path = os.path.join(dir_path, file_name) if dir_path else file_name
+        file_path = os.path.join(dir_path, file_name)\
+            if dir_path else file_name
 
         with open(file_path, "a") as f:
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
