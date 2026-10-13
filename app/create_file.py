@@ -25,8 +25,16 @@ if dirs:
 
 if file_name:
     file_path = os.path.join(path, file_name) if path else file_name
+
+    add_empty_line =\
+        os.path.exists(file_path) and os.path.getsize(file_path) > 0
+
     with open(file_path, "a") as f:
+        if add_empty_line:
+            f.write("\n")
+
         f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+
         line_count = 1
         while True:
             line = input("Enter content line: ")
@@ -34,4 +42,3 @@ if file_name:
                 break
             f.write(f"{line_count} {line}\n")
             line_count += 1
-        f.write("\n")
