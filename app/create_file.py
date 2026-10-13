@@ -4,33 +4,33 @@ import sys
 
 
 def main() -> None:
-    args = sys.argv[1:]
     dirs = []
-    file_name = None
+    file_name = ""
+    args = sys.argv[1:]
+    current_flag = None
 
-    if "-d" in args:
-        d_idx = args.index("-d")
-        for arg in args[d_idx + 1:]:
-            if arg.startswith("-"):
-                break
+    for arg in args:
+        if arg in ("-d", "-f"):
+            current_flag = arg
+            continue
+
+        if current_flag == "-d":
             dirs.append(arg)
+        elif current_flag == "-f":
+            file_name = arg
+            current_flag = None
 
-    if "-f" in args:
-        f_idx = args.index("-f")
-        file_name = args[f_idx + 1]
-
-    dir_path = ""
+    path = ""
     if dirs:
-        dir_path = os.path.join(*dirs)
-        os.makedirs(dir_path, exist_ok=True)
+        path = os.path.join(*dirs)
+        os.makedirs(path, exist_ok=True)
 
     if file_name:
-        file_path = os.path.join(dir_path, file_name)\
-            if dir_path else file_name
-
+        file_path = os.path.join(path, file_name) if path else file_name
         with open(file_path, "a") as f:
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             f.write(f"{now}\n")
+
             line_count = 1
             while True:
                 line = input("Enter content line: ")
