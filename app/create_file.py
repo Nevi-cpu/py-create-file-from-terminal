@@ -1,33 +1,43 @@
-import sys
+import datetime
 import os
+import sys
 
 
 def main() -> None:
+    args = sys.argv[1:]
+    dirs = []
     file_name = None
-    path = None
 
-    if "-d" in sys.argv:
-        d_index = sys.argv.index("-d")
-        start = d_index + 1
-        end = len(sys.argv)
+    if "-d" in args:
+        d_idx = args.index("-d")
+        for arg in args[d_idx + 1:]:
+            if arg.startswith("-"):
+                break
+            dirs.append(arg)
 
-        if "-f" in sys.argv:
-            f_index = sys.argv.index("-f")
-            if f_index > d_index:
-                end = f_index
+    if "-f" in args:
+        f_idx = args.index("-f")
+        file_name = args[f_idx + 1]
 
-        dirs = sys.argv[start:end]
-        path = os.path.join(*dirs)
-        os.makedirs(path, exist_ok=True)
+    dir_path = ""
+    if dirs:
+        dir_path = os.path.join(*dirs)
+        os.makedirs(dir_path, exist_ok=True)
 
-    if "-f" in sys.argv:
-        f_index = sys.argv.index("-f")
-        file_name = sys.argv[f_index + 1]
+    if file_name:
+        file_path = os.path.join(dir_path, file_name) if dir_path else file_name
 
-        if path:
-            file_name = os.path.join(path, file_name)
-
-    print(file_name)
+        with open(file_path, "a") as f:
+            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"{now}\n")
+            line_count = 1
+            while True:
+                line = input("Enter content line: ")
+                if line == "stop":
+                    break
+                f.write(f"{line_count} {line}\n")
+                line_count += 1
+            f.write("\n")
 
 
 if __name__ == "__main__":
